@@ -25,10 +25,16 @@ main() {
   printf("int range (computed) %d to %d", -(int)((unsigned int)~0 >> 1) - 1,
          (int)((unsigned int)~0 >> 1));
   printf("\n");
+  printf("int range (computed alternative) %d to %d", -(int)(~0U >> 1) - 1,
+         (int)(~0U >> 1));
+  printf("\n");
   printf("long range %ld to %ld", LONG_MIN, LONG_MAX);
   printf("\n");
   printf("int range (computed) %ld to %ld", -(long)((unsigned long)~0 >> 1) - 1,
          (long)((unsigned long)~0 >> 1));
+  printf("\n");
+  printf("int range (computed alternative) %ld to %ld", -(long)(~0UL >> 1) - 1,
+         (long)(~0UL >> 1));
   printf("\n");
   printf("unsigned: \n");
   printf("unsigned char max = %u\n", UCHAR_MAX);
@@ -37,8 +43,10 @@ main() {
   printf("unsigned short max (computed) = %u\n", (unsigned short)~0);
   printf("unsigned int max = %u\n", UINT_MAX);
   printf("unsigned int max (computed) = %u\n", (unsigned int)~0);
+  printf("unsigned int max (computed alternative) = %u\n", ~0U);
   printf("unsigned long max = %lu\n", ULONG_MAX);
   printf("unsigned long max (computed) = %lu\n", (unsigned long)~0);
+  printf("unsigned long max (computed alternative) = %lu\n", ~0UL);
 
   printf("explanation of the computation: \n");
 
