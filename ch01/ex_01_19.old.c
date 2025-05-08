@@ -31,17 +31,22 @@ int getline(char s[], int lim) {
 }
 
 void reverse(char s[]) {
-  int len, i;
-  char tmp;
+  int i, j;
+  /* a more efficient solution is to swap characters, removing the need for a */
+  /* tmp string */
+  char tmp[MAXLINE];
 
-  for (len = 0; s[len] != '\0'; len++)
-    ;
-  len--;
-  if (s[len] == '\n')
-    len--;
-  for (i = 0; i < len - i; i++) {
-    tmp = s[i];
-    s[i] = s[len - i];
-    s[len - i] = tmp;
+  i = 0;
+  while (s[i] != '\0') {
+    tmp[i] = s[i];
+    i++;
   }
+  i--;
+  if (tmp[i] == '\n') {
+    i--;
+  }
+  for (j = 0; j <= i; j++) {
+    s[j] = tmp[i - j]; /* -1 to ignore the newline at the end of tmp */
+  }
+  s[++j] = '\0';
 }

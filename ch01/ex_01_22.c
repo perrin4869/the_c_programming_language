@@ -18,7 +18,7 @@ main() {
   while ((c = getchar()) != EOF) {
     if (c == '\n') {
       buf[i++] = '\0';
-      // account for the trailing space
+      /* account for the trailing space */
       if (i + pos + 1 > MAXLINE) {
         if (pos == 0) {
           printf("%s\n", buf);
