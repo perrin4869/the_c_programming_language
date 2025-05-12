@@ -1,25 +1,25 @@
 #include <stdio.h>
-#define TABSTOP 4
+
+#define COLUMNS 10
 
 main() {
+  int col;
   int c;
-  int state = 0;
 
-  while ((c = getchar()) != EOF) {
+  col = 0;
+  while ((c = getchar()) != EOF)
     if (c == '\t') {
-      do {
+      putchar(' ');
+      col++;
+      while (col % COLUMNS != 0) {
+        /* printf("%d %d", col, COLUMNS - (col % COLUMNS)); */
         putchar(' ');
-      } while ((++state) % TABSTOP != 0);
-      continue;
-    }
-
-    if (c == '\n') {
-      state = 0;
+        col++;
+      }
     } else {
-      state++;
+      putchar(c);
+      col++;
+      if (c == '\n')
+        col = 0;
     }
-
-    putchar(c);
-  }
-  return 0;
 }

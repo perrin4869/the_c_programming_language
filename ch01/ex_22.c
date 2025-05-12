@@ -1,51 +1,47 @@
 #include <stdio.h>
-#define BUFSIZE 100
-#define MAXLINE 20
 
-/*
- * not a very good solution compared to the one in the answer keys
- * this approach makes it harder to account for edge cases like handling
- * multiple spaces correctly, no tab handling, word overflow, etc
- * the better approach is to read lines into a buffer and print them once they
- * overflow or encounter a newline
- */
+#define LINE 50
+#define TAB 8
+
+int getword(char s[], int l);
+
+/* better than the old solution, still not as good as the one in the answers
+ * key */
+/* this doesn't handle properly a space at the end of a line */
 main() {
-  int c;
-  int pos = 0;
-  int i = 0;
-  char buf[BUFSIZE];
+  int col;
+  int len;
+  char word[LINE];
 
-  while ((c = getchar()) != EOF) {
-    if (c == '\n') {
-      buf[i++] = '\0';
-      /* account for the trailing space */
-      if (i + pos + 1 > MAXLINE) {
-        if (pos == 0) {
-          printf("%s\n", buf);
-        } else {
-          printf("\n%s", buf);
-          pos += i;
-        }
-      } else {
-        printf(" %s\n", buf);
-        pos = 0;
-      }
-      i = 0;
-    } else if (c == ' ') {
-      buf[i++] = '\0';
-      if (i + pos + 1 > MAXLINE) {
-        printf("\n");
-        pos = 0;
-      } else if (pos > 0) {
-        printf(" ");
-        pos++;
-      }
-      printf("%s", buf);
-      pos += i;
-      i = 0;
+  col = 0;
+  while ((len = getword(word, LINE)) != 0) {
+    if (len + col > LINE) {
+      printf("\n%s", word);
+      col = len;
     } else {
-      buf[i++] = c;
+      printf("%s", word);
     }
+
+    if (word[len - 1] == '\n')
+      col = 0;
+    else
+      col = col + len;
+
+    if (word[len - 1] == '\t')
+      col = col + TAB - 1;
   }
-  return 0;
+}
+
+int getword(char s[], int l) {
+  int i, c;
+
+  for (i = 0; i < l - 1 && (c = getchar()) != ' ' && c != '\t' && c != '\n' &&
+              c != EOF;
+       i++)
+    s[i] = c;
+  if (c == ' ' || c == '\t' || c == '\n')
+    s[i++] = c;
+  s[i] = '\0';
+
+  return i;
 }
