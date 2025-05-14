@@ -4,33 +4,35 @@
 int htoi(const char s[]);
 
 main() {
-  printf("%d\n", htoi("F"));
-  printf("%d\n", htoi("0xFF"));
-  printf("%d\n", htoi("a"));
-  printf("%d\n", htoi("0Xab"));
+  printf("c = %d\n", htoi("c"));
+  printf("e = %d\n", htoi("e"));
+  printf("0xe = %d\n", htoi("0xe"));
+  printf("0Xe = %d\n", htoi("0Xe"));
+
+  printf("0XE = %d\n", htoi("0XE"));
+  printf("0X3 = %d\n", htoi("0X3"));
+  printf("0x13 = %d\n", htoi("0x13"));
+  printf("0xac = %d\n", htoi("0xac"));
+  printf("0x1a = %d\n", htoi("0x1a"));
+  printf("0x1aa = %d\n", htoi("0x1aa"));
 }
 
 int htoi(const char s[]) {
-  int i = 0, d;
-  int sum = 0;
+  int i = 0;
+  int num = 0;
 
   if (s[0] == '0' && (s[1] == 'x' || s[1] == 'X')) {
     i = 2;
   }
 
-  for (; s[i] != '\0'; i++) {
+  while (s[i] != '\0') {
     if (isdigit(s[i])) {
-      d = s[i] - '0';
-    } else if (s[i] >= 'A' && s[i] <= 'F') {
-      d = 10 + s[i] - 'A';
-    } else if (s[i] >= 'a' && s[i] <= 'f') {
-      d = 10 + s[i] - 'a';
+      num = num * 16 + s[i] - '0';
     } else {
-      printf("Invalid input");
-      exit(1);
+      num = num * 16 + tolower(s[i]) - 'a' + 10;
     }
-    sum = sum * 0x10 + d;
+    i++;
   }
 
-  return sum;
+  return num;
 }

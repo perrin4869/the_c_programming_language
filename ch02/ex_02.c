@@ -1,19 +1,39 @@
 #include <stdio.h>
-#define LIM 1000
 
 main() {
-  int i, c;
-  char s[LIM];
-  for (i = 0; i < LIM - 1 && (c = getchar()) != '\n' && c != EOF; ++i)
-    s[i] = c;
+  int i;
+  int c;
+  int lim;
+  char s[20];
 
-  // without using && operator
-  for (i = 0; i < LIM - 1; ++i) {
-    if ((c = getchar()) == '\n') {
-      break;
-    } else if (c == EOF) {
+  for (i = 0; i < lim - 1; i++) {
+    if ((c = getchar()) != '\n') {
+      if (c != EOF) {
+        s[i] = c;
+      } else {
+        break;
+      }
+    } else {
       break;
     }
-    s[i] = c;
+  }
+
+  /* from the answers key: */
+
+  enum loop { NO, YES };
+  enum loop okloop = YES;
+
+  i = 0;
+  while (okloop == YES) {
+    if (i >= lim - 1)
+      okloop = NO;
+    else if ((c = getchar()) == '\n')
+      okloop = NO;
+    else if (c == EOF)
+      okloop = NO;
+    else {
+      s[i] = c;
+      ++i;
+    }
   }
 }

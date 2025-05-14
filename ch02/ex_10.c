@@ -1,19 +1,11 @@
 #include <stdio.h>
 
-int lower(int);
+int lower(int c);
 
 main() {
-  printf("%d\n", bitcount(16));
-  printf("%d\n", bitcount(17));
-  printf("%d\n", bitcount(83));
-  printf("%d\n", bitcount(91));
-  printf("%d\n", bitcount(-91));
-
-  printf("%d\n", bitcount_unsigned(16));
-  printf("%d\n", bitcount_unsigned(17));
-  printf("%d\n", bitcount_unsigned(83));
-  printf("%d\n", bitcount_unsigned(91));
-  printf("%d\n", bitcount_unsigned(-91));
+  printf("%c", lower('A'));
+  printf("%c", lower('a'));
+  printf("%c", lower('Z'));
 }
 
-int lower(int c) { return c + ((c >= 'A' && c <= 'Z') ? 'a' - 'A' : 0); }
+int lower(int c) { return (c >= 'A' && c <= 'Z') ? c + 'a' - 'A' : c; }

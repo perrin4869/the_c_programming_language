@@ -1,39 +1,24 @@
 #include <stdio.h>
 
-unsigned getbits(unsigned x, int p, int n);
-unsigned setbits(unsigned x, int p, int n, unsigned y);
-unsigned setbits_answerskey(unsigned x, int p, int n, unsigned y);
+unsigned setbits(unsigned x, int p, int n, int y);
+
+/*
+ * the idea here is:
+ * x^0 = x for x=0,1
+ * x^1 = ~x for x=0,1
+ * x|0 = x for x=0,1
+ * x|1 = 1 for x=0,1
+ */
 
 main() {
-  printf("%d\n", setbits(0, 0, 1, ~0));
-  printf("%d\n", setbits(0, 4, 2, ~0));
-  printf("%d\n", setbits(0, 5, 4, ~0));
-
-  printf("%d\n", setbits_answerskey(0, 0, 1, ~0));
-  printf("%d\n", setbits_answerskey(0, 4, 2, ~0));
-  printf("%d\n", setbits_answerskey(0, 5, 4, ~0));
+  printf("setbits(0, 0, 1, 1) = %d\n", setbits(0, 0, 1, 1));
+  printf("setbits(1, 2, 2, ~0) = %d\n", setbits(1, 2, 2, ~0));
+  printf("setbits(1, 3, 2, ~0) = %d\n", setbits(1, 3, 2, ~0));
 }
 
-unsigned getbits(unsigned x, int p, int n) {
-  return (x >> (p + 1 - n)) & ~(~0 << n);
-}
-
-// my own solution, result of lack of creativity
-unsigned setbits(unsigned x, int p, int n, unsigned y) {
-  int i, b;
-  for (i = 0; i < n; i++) {
-    b = getbits(y, i, 1);
-    if (b)
-      x |= 1 << (p - n + i + 1);
-    else
-      x &= ~(1 << (p - n + i + 1));
-  }
-
-  return x;
-}
-
-// stolen from the answers key of the book
-// clear the bits to be set from x and clear irrelevant bits from y
-unsigned setbits_answerskey(unsigned x, int p, int n, unsigned y) {
-  return x & ~(~(~0 << n) << (p - n + 1)) | ((y & ~(~0 << n)) << (p - n + 1));
+unsigned setbits(unsigned x, int p, int n, int y) {
+  y = (y & ~(~0 << n)) << (p - n + 1); /* 00000yyyy00000 */
+  x &= ~(~(~0 << n) << (p - n + 1));   /* x & 111100001111 -> xxxx0000xxxx */
+  /* return ~x ^ ~y; /1* ~xxxx1111~xxxx ^ 1111~yyyy1111 = xxxxyyyyxxxx *1/ */
+  return x | y; /* xxxx0000xxxx ^ 0000yyyy0000 = xxxxyyyyxxxx */
 }
