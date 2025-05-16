@@ -1,33 +1,73 @@
+#include <ctype.h>
 #include <stdio.h>
 
-#define SIZE 1000
-
-void expand(char s1[], const char s2[]);
+void expand(const char s1[], char s2[]);
 
 main() {
-  char s[SIZE];
-  expand(s, "a-z");
-  printf("%s\n", s);
+  char res[100];
 
-  expand(s, "-a-z");
-  printf("%s\n", s);
+  expand("0-9", res);
+  printf("0-9: %s\n", res);
 
-  expand(s, "a-z-");
-  printf("%s\n", s);
+  expand("a-z", res);
+  printf("a-z: %s\n", res);
 
-  expand(s, "0-9");
-  printf("%s\n", s);
+  expand("A-Z", res);
+  printf("A-Z: %s\n", res);
+
+  expand("A-z", res);
+  printf("A-z: %s\n", res);
+
+  expand("-0-9", res);
+  printf("-0-9: %s\n", res);
+
+  expand("a-c-e", res);
+  printf("a-c-e: %s\n", res);
+
+  expand("tsth thtss-v-9", res);
+  printf("-0-9: %s\n", res);
 }
 
-void expand(char s1[], const char s2[]) {
+void expand(const char s1[], char s2[]) {
   int i, j;
   char k;
-  for (i = 0, j = 0; s2[i] != '\0'; i++) {
-    if (i > 0 && s2[i] == '-' && s2[i + 1] != '\0')
-      for (k = s1[j - 1] + 1, ++i; k <= s2[i]; k++)
-        s1[j++] = k;
-    else
-      s1[j++] = s2[i];
-  }
-  s1[j++] = '\0';
+
+  for (i = 0, j = 0; s1[i] != '\0'; i++)
+    if (islower(s1[i]) && s1[i + 1] == '-' && islower(s1[i + 2]) &&
+        s1[i] < s1[i + 2]) {
+      for (k = s1[i]; k < s1[i + 2]; k++)
+        s2[j++] = k;
+      i++;
+    } else if (isupper(s1[i]) && s1[i + 1] == '-' && isupper(s1[i + 2]) &&
+               s1[i] < s1[i + 2]) {
+      for (k = s1[i]; k < s1[i + 2]; k++)
+        s2[j++] = k;
+      i++;
+    } else if (isdigit(s1[i]) && s1[i + 1] == '-' && isdigit(s1[i + 2]) &&
+               s1[i] < s1[i + 2]) {
+      for (k = s1[i]; k < s1[i + 2]; k++)
+        s2[j++] = k;
+      i++;
+    } else {
+      s2[j++] = s1[i];
+    }
+
+  s2[j] = '\0';
+}
+
+void expand_alt(const char s1[], char s2[]) {
+  int i, j;
+  char k;
+
+  for (i = 0, j = 0; s1[i] != '\0'; i++)
+    if (isalnum(s1[i]) && s1[i + 1] == '-' && isalnum(s1[i + 2]) &&
+        s1[i] < s1[i + 2]) {
+      for (k = s1[i]; k < s1[i + 2]; k++)
+        s2[j++] = k;
+      i++;
+    } else {
+      s2[j++] = s1[i];
+    }
+
+  s2[j] = '\0';
 }

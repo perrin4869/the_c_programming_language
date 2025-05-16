@@ -1,76 +1,60 @@
 #include <stdio.h>
 
-int binsearch(int a[], int n, int x);
-int binsearch_alternative(int a[], int n, int x);
-int binsearch_answerskey(int a[], int n, int x);
+int binsearch(int x, int a[], int n);
+int binsearch_answerskey(int x, int a[], int n);
 
 main() {
   int a[] = {1, 4, 7, 8, 9};
-  printf("%d\n", binsearch(a, 5, 8));
-  printf("%d\n", binsearch(a, 5, 4));
+  printf("%d\n", binsearch(8, a, 5));
+  printf("%d\n", binsearch(4, a, 5));
+  printf("%d\n", binsearch(7, a, 5));
 
-  printf("%d\n", binsearch_alternative(a, 5, 8));
-  printf("%d\n", binsearch_alternative(a, 5, 4));
-
-  printf("%d\n", binsearch_answerskey(a, 5, 8));
-  printf("%d\n", binsearch_answerskey(a, 5, 4));
+  printf("%d\n", binsearch_answerskey(8, a, 5));
+  printf("%d\n", binsearch_answerskey(4, a, 5));
+  printf("%d\n", binsearch_answerskey(7, a, 5));
 }
 
-int binsearch(int a[], int n, int x) {
-  int m;
-  int l = 0;
-  int h = n - 1;
+/* this is the exact same as what I did in my first read through lol
+ * as I wrote then, this method is the slowest, because it will run for log2(n)
+ * iterations.
+ * the language of the question suggests that we shouldn't add additional
+ * expressions to the if condition, which is where the confusion comes from
+ */
+int binsearch(int x, int v[], int n) {
+  int low = 0;
+  int high = n - 1;
+  int mid;
 
-  while (l <= h) {
-    m = (l + h) / 2;
-    if (x < a[m])
-      h = m - 1;
-    else if (x > a[m])
-      l = m + 1;
+  while (low <= high) {
+    mid = (low + high) / 2;
+    if (v[mid] < x)
+      low = mid + 1;
     else
-      return m;
+      high = mid - 1;
   }
 
+  if (v[low] == x)
+    return low;
+  if (v[high] == x)
+    return high;
   return -1;
 }
 
-// terrible, the loop has log2(n) iterations for all n
-int binsearch_alternative(int a[], int n, int x) {
-  int m;
-  int l = 0;
-  int h = n - 1;
+int binsearch_answerskey(int x, int v[], int n) {
+  int low = 0;
+  int high = n - 1;
+  int mid = (low + high) / 2;
 
-  while (l <= h) {
-    m = (l + h) / 2;
-    if (x < a[m])
-      h = m - 1;
+  while (low <= high && v[mid] != x) {
+    if (v[mid] < x)
+      low = mid + 1;
     else
-      l = m + 1;
+      high = mid - 1;
+
+    mid = (low + high) / 2;
   }
 
-  if (a[l] == x)
-    return l;
-  else if (a[h] == x)
-    return h;
-  else
-    return -1;
-}
-
-int binsearch_answerskey(int a[], int n, int x) {
-  int l = 0;
-  int h = n - 1;
-  int m = (h + l) / 2;
-
-  while (l <= h && a[m] != x) {
-    if (x < a[m])
-      h = m - 1;
-    else
-      l = m + 1;
-    m = (l + h) / 2;
-  }
-
-  if (a[m] == x)
-    return l;
-  else
-    return -1;
+  if (v[mid] == x)
+    return mid;
+  return -1;
 }

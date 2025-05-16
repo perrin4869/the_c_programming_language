@@ -1,69 +1,51 @@
 #include <limits.h>
 #include <stdio.h>
+#include <string.h>
 
-#define MAXLINE 1000
-#define abs(x) ((x) < 0 ? -(x) : (x))
-
-void reverse(char s[]);
 void itoa(int n, char s[], int w);
+void reverse(char s[]);
 
 main() {
-  char line[MAXLINE];
+  char res[100];
+  int n;
 
-  itoa(15, line, 4);
-  printf("%d: %s\n", 15, line);
+  n = 255;
+  itoa(n, res, 3);
+  printf("255: %d = %s\n", n, res);
 
-  itoa(-15, line, 4);
-  printf("%d: %s\n", 15, line);
+  itoa(n, res, 4);
+  printf("255: %d = %s\n", n, res);
 
-  itoa(29, line, 6);
-  printf("%d: %s\n", 29, line);
-
-  itoa(INT_MIN, line, 6);
-  printf("%d: %s\n", INT_MIN, line);
-}
-
-void reverse(char s[]) {
-  int i, j;
-  // a more efficient solution is to swap characters, removing the need for a
-  // tmp string
-  char tmp[MAXLINE];
-
-  i = 0;
-  while (s[i] != '\0') {
-    tmp[i] = s[i];
-    i++;
-  }
-  i--;
-  if (tmp[i] == '\n') {
-    i--;
-  }
-  for (j = 0; j <= i; j++) {
-    s[j] = tmp[i - j]; // -1 to ignore the newline at the end of tmp
-  }
-  s[++j] = '\0';
+  itoa(n, res, 5);
+  printf("255: %d = %s\n", n, res);
 }
 
 void itoa(int n, char s[], int w) {
   int i, sign;
 
-  sign = n;
+  if ((sign = n) < 0) /* record sign */
+    n = -n;
   i = 0;
-  do {
-    s[i++] = abs(n % 10) + '0';
-    w--;
-  } while ((n /= 10) != 0);
+  do {                     /* generate digits in reverse order */
+    s[i++] = n % 10 + '0'; /* get next digit */
+  } while ((n /= 10) != 0); /* delete it */
 
-  if (sign < 0) {
+  if (sign < 0)
     s[i++] = '-';
-    w--;
-  }
 
-  while (w > 0) {
+  while (i < w)
     s[i++] = ' ';
-    w--;
-  }
 
   s[i] = '\0';
   reverse(s);
+}
+
+void reverse(char s[]) {
+  int i, j;
+  char c;
+  for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
+    c = s[i];
+    s[i] = s[j];
+    s[j] = c;
+  }
 }

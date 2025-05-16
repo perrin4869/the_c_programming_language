@@ -1,114 +1,71 @@
 #include <limits.h>
 #include <stdio.h>
+#include <string.h>
 
-#define MAXLINE 1000
-#define abs(x) ((x) < 0 ? -(x) : (x))
-
-void reverse(char s[]);
-void itoa_textbook(int n, char s[]);
+void itoa_orig(int n, char s[]);
 void itoa(int n, char s[]);
-void itoa_answerskey(int n, char s[]);
+void reverse(char s[]);
 
 main() {
-  printf("%u, %u\n", INT_MIN, -19);
+  char res[100];
+  int n;
 
-  char line[MAXLINE];
+  n = 255;
+  itoa(n, res);
+  printf("255: %d = %s\n", n, res);
 
-  itoa_textbook(29, line);
-  printf("textbook %d: %s\n", 29, line);
+  n = INT_MIN;
+  itoa(INT_MIN, res);
+  printf("INT_MIN: %d = %s\n", n, res);
 
-  itoa_textbook(-29, line);
-  printf("textbook %d: %s\n", -29, line);
+  n = INT_MIN;
+  itoa_orig(n, res);
+  printf("(orig) - INT_MIN: %d = %s\n", n, res);
 
-  itoa_textbook(INT_MIN, line);
-  printf("textbook %d: %s\n", INT_MIN, line);
+  n = INT_MIN + 1;
+  itoa_orig(n, res);
+  printf("(orig) - INT_MIN + 1: %d = %s\n", n, res);
+}
 
-  itoa(29, line);
-  printf("textbook %d: %s\n", 29, line);
+void itoa_orig(int n, char s[]) {
+  int i, sign;
 
-  itoa(-29, line);
-  printf("textbook %d: %s\n", -29, line);
+  if ((sign = n) < 0) /* record sign */
+    n = -n;
+  i = 0;
+  do {                     /* generate digits in reverse order */
+    s[i++] = n % 10 + '0'; /* get next digit */
+  } while ((n /= 10) != 0); /* delete it */
 
-  itoa(INT_MIN, line);
-  printf("%d: %s\n", INT_MIN, line);
+  if (sign < 0)
+    s[i++] = '-';
+  s[i] = '\0';
+  reverse(s);
+}
 
-  itoa_answerskey(INT_MIN, line);
-  printf("answers key %d: %s\n", INT_MIN, line);
+void itoa(int n, char s[]) {
+  int i, sign;
+
+  sign = 1;
+  if (n < 0) /* record sign */
+    sign = -1;
+  i = 0;
+  do {                              /* generate digits in reverse order */
+    s[i++] = sign * (n % 10) + '0'; /* get next digit */
+  } while ((n /= 10) != 0); /* delete it */
+
+  if (sign < 0)
+    s[i++] = '-';
+  s[i] = '\0';
+  reverse(s);
 }
 
 void reverse(char s[]) {
   int i, j;
-  // a more efficient solution is to swap characters, removing the need for a
-  // tmp string
-  char tmp[MAXLINE];
-
-  i = 0;
-  while (s[i] != '\0') {
-    tmp[i] = s[i];
-    i++;
+  char c;
+  for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
+    c = s[i];
+    s[i] = s[j];
+    s[j] = c;
   }
-  i--;
-  if (tmp[i] == '\n') {
-    i--;
-  }
-  for (j = 0; j <= i; j++) {
-    s[j] = tmp[i - j]; // -1 to ignore the newline at the end of tmp
-  }
-  s[++j] = '\0';
-}
-
-void itoa_textbook(int n, char s[]) {
-  int i, sign;
-
-  if ((sign = n) < 0)
-    n = -n;
-  i = 0;
-
-  do {
-    s[i++] = n % 10 + '0';
-  } while ((n /= 10) > 0);
-
-  if (sign < 0)
-    s[i++] = '-';
-  s[i] = '\0';
-  reverse(s);
-}
-
-// -128 = 10000000 in two's complement representation
-// the two's complement of this number is 10000000
-// as an unsigned int, it represents 128
-void itoa(int n, char s[]) {
-  int i;
-  unsigned int un;
-
-  if (n >= 0)
-    un = n;
-  else
-    un = (n == INT_MIN) ? INT_MIN : -n;
-  i = 0;
-
-  do {
-    s[i++] = un % 10 + '0';
-  } while ((un /= 10) > 0);
-
-  if (n < 0)
-    s[i++] = '-';
-  s[i] = '\0';
-  reverse(s);
-}
-
-// this is nice because it does not handle INT_MIN like a separate case
-void itoa_answerskey(int n, char s[]) {
-  int i, sign;
-
-  sign = n;
-  i = 0;
-  do {
-    s[i++] = abs(n % 10) + '0';
-  } while ((n /= 10) != 0);
-
-  if (sign < 0)
-    s[i++] = '-';
-  s[i] = '\0';
-  reverse(s);
 }
