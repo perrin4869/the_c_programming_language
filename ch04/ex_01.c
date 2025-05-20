@@ -1,28 +1,24 @@
 #include <stdio.h>
 #include <string.h>
 
-int strrindex(const char[], const char[]);
+int strrindex(const char s[], const char t[]);
 
 main() {
-  printf("%d\n", strrindex("omgnoomg", "omg"));
-  printf("%d\n", strrindex("uvfuckuvfaggotuvgay", "uv"));
-  printf("%d\n", strrindex("omgnofuck", "omg"));
+  printf("strrindex(\"aa bb aa\", \"aa\"): %d\n", strrindex("aa bb aa", "aa"));
+  printf("strrindex(\"ttabbaciibaid\", \"ba\"): %d\n",
+         strrindex("ttabbaciibaid", "ba"));
 }
 
 int strrindex(const char s[], const char t[]) {
-  int i, j, k;
-  int ls = strlen(s);
-  int lt = strlen(t);
+  int tl = strlen(t) - 1;
+  int i, j;
 
-  // note from the answers key - another solution starts
-  // looking from position i = ls - lt, since it is the real first
-  // position in which t could appear inside s, and checks forward
-  for (i = ls - 1; i >= lt - 1; i--) {
-    for (j = i, k = lt - 1; k >= 0 && s[j] == t[k]; j--, k--)
+  for (i = strlen(s) - 1; i >= tl; i--) {
+    for (j = tl; j >= 0 && s[i - (tl - j)] == t[j]; j--)
       ;
-
-    if (k < 0)
-      return j + 1;
+    if (j == -1)
+      return i - tl;
   }
+
   return -1;
 }

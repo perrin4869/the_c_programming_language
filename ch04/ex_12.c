@@ -1,45 +1,58 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 
-#define MAX 100
+#define SIZE 100
 
-void itoa(int, char[]);
-void itoa_answerskey(int, char[]);
+void itoa(int n, char s[]);
+int itoa_r(int n, char s[], int i);
+
+void itoa_answerskey(int n, char s[]);
 
 main() {
-  char buf[MAX];
+  int n;
+  char s[SIZE];
 
-  itoa(4, buf);
-  printf("%s\n", buf);
-  itoa(103, buf);
-  printf("%s\n", buf);
-  itoa(1042, buf);
-  printf("%s\n", buf);
+  n = 123;
+  itoa(n, s);
+  printf("%d: %s\n", n, s);
 
-  itoa_answerskey(4, buf);
-  printf("%s\n", buf);
-  itoa_answerskey(103, buf);
-  printf("%s\n", buf);
-  itoa_answerskey(1042, buf);
-  printf("%s\n", buf);
-  itoa_answerskey(-1042, buf);
-  printf("%s\n", buf);
+  n = -123;
+  itoa(n, s);
+  printf("%d: %s\n", n, s);
+
+  n = 123;
+  itoa_answerskey(n, s);
+  printf("%d: %s\n", n, s);
+
+  n = -123;
+  itoa_answerskey(n, s);
+  printf("%d: %s\n", n, s);
 }
 
-void itoa(int n, char buf[]) {
-  static int i;
-  if (n == 0) {
-    int j, t;
-    for (j = 0; j <= (i - 1) / 2; j++) {
-      t = buf[j];
-      buf[j] = buf[i - 1 - j];
-      buf[i - 1 - j] = t;
-    }
-    buf[i] = '\0';
-    i = 0;
+/*
+ * well, obviously changing the signature of the function was not an option, and
+ * adding a helper function was not the intended method for this exercise, but I
+ * hadn't considered at all the possibility of using a static variable
+ */
+void itoa(int n, char s[]) {
+  int i = 0;
+  if (n < 0) {
+    n = -1 * n;
+    s[i++] = '-';
+  }
+
+  itoa_r(n, s, i);
+}
+
+int itoa_r(int n, char s[], int i) {
+  int j;
+  if (n > 0) {
+    j = itoa_r(n / 10, s, i + 1);
+    s[j] = n % 10 + '0';
+    return j + 1;
   } else {
-    buf[i++] = n % 10 + '0';
-    itoa(n / 10, buf);
+    s[i] = '\0';
+    return s[0] == '-' ? 1 : 0;
   }
 }
 

@@ -1,19 +1,16 @@
 #include <stdio.h>
 
-char buf = -1;
+#define EMPTY 0
+
+char buf = EMPTY;
 
 int getch(void) {
-  if (buf > -1) {
-    int c;
-    c = buf;
-    buf = -1;
-    return c;
-  }
-  return getchar();
+  int ret = (buf != EMPTY) ? buf : getchar();
+  buf = EMPTY;
+  return ret;
 }
-
 void ungetch(int c) {
-  if (buf > -1)
+  if (buf != EMPTY)
     printf("ungetch: too many characters\n");
   else
     buf = c;

@@ -2,15 +2,16 @@
 #include <ctype.h>
 #include <stdio.h>
 
+#define EMPTY -1
+
 /* getop: get next operator or numeric operand */
 int getop(char s[]) {
+  static int ungetch = EMPTY;
   int i, c;
-  static int buf = 0;
 
-  s[0] = c = !buf ? getchar() : buf;
-  buf = 0;
-  while (c == ' ' || c == '\t')
-    s[0] = c = getchar();
+  while ((s[0] = c = (ungetch != EMPTY) ? ungetch : getchar()) == ' ' ||
+         c == '\t')
+    ungetch = EMPTY;
 
   s[1] = '\0';
   if (!isdigit(c) && c != '.')
@@ -24,8 +25,6 @@ int getop(char s[]) {
     while (isdigit(s[++i] = c = getchar()))
       ;
   s[i] = '\0';
-  if (c != EOF)
-    buf = c;
-
+  ungetch = (c != EOF) ? c : EMPTY;
   return NUMBER;
 }

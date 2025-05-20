@@ -1,41 +1,48 @@
 #include <stdio.h>
 #include <string.h>
 
-void reverse(char s[]);
+#define MAX 100
+
+void reverse(char[]);
+void reverse_answerskey(char[]);
 
 main() {
-  char s[] = "foo";
-  reverse(s);
-  printf("%s\n", s);
-  reverse(s);
-  printf("%s\n", s);
+  char buf[MAX] = "omg";
+  reverse(buf);
+  printf("%s\n", buf);
+
+  char buf2[MAX] = "omg1";
+  reverse(buf2);
+  printf("%s\n", buf2);
+
+  char buf3[MAX] = "omg";
+  reverse(buf3);
+  printf("%s\n", buf3);
+
+  char buf4[MAX] = "omg1";
+  reverse(buf4);
+  printf("%s\n", buf4);
 }
 
 void reverse(char s[]) {
-  static int i = 0;
-  static int j = 0;
+  static int i, j;
   char tmp;
 
-  if (s[i] == '\0') {
-    j = 0;
-  } else {
+  if (s[i] != '\0') {
     i++;
     reverse(s);
+
     i--;
-
     if (j < i) {
-      tmp = s[i];
-      s[i] = s[j];
-      s[j] = tmp;
+      tmp = s[j];
+      s[j] = s[i];
+      s[i] = tmp;
+
+      j++;
     }
-
-    j++;
-  }
+  } else
+    j = 0;
 }
-
-/*
- * copied over from my first runthrough:
- */
 
 void reverser(char s[], int i, int len);
 

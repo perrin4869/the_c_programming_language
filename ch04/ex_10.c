@@ -2,44 +2,54 @@
 #include <ctype.h>
 #include <stdio.h>
 
-#define MAXLINE 1000
+#define MAXLINE 100
 
-int li;
-char line[1000];
+int getline(char line[], int maxline);
 
-int mgetline(char[], int);
+/*
+ * do not declare as static, because that is not discussed until page 83 of K&R
+ */
+int i;
+char line[MAXLINE];
 
 /* getop: get next operator or numeric operand */
 int getop(char s[]) {
-  int l;
-  if (line[li] == '\0') {
-    l = mgetline(line, MAXLINE);
-    li = 0;
-    if (l < 1)
+  int j, c;
+
+  /*
+   * note: it suffices to check line[i] == '\0'
+   * this is because an external variable is initialized to 0, i.e,
+   * int line[MAXLINE] = {0}
+   * so the case where this is the first call to getop folds into the case where
+   * we are at the end of the current line
+   * taken from the answers key
+   */
+  if (i == 0 || line[i] == '\0') {
+    if (!getline(line, MAXLINE))
       return EOF;
+    i = 0;
   }
 
-  int i, c;
-  while ((s[0] = c = line[li++]) == ' ' || c == '\t')
+  while ((s[0] = c = line[i++]) == ' ' || c == '\t')
     ;
 
   s[1] = '\0';
   if (!isdigit(c) && c != '.')
     return c;
-  i = 0;
+  j = 0;
   if (isdigit(c))
-    while (isdigit(s[++i] = c = line[li++]))
+    while (isdigit(s[++j] = c = line[i++]))
       ;
 
   if (c == '.')
-    while (isdigit(s[++i] = c = line[li++]))
+    while (isdigit(s[++j] = c = line[i++]))
       ;
-  s[i] = '\0';
-  li--; // was forgetting this, ungetch
+  s[j] = '\0';
+  i--;
   return NUMBER;
 }
 
-int mgetline(char s[], int lim) {
+int getline(char s[], int lim) {
   int c, i;
 
   for (i = 0; i < lim - 1 && (c = getchar()) != EOF && c != '\n'; ++i)
@@ -49,13 +59,5 @@ int mgetline(char s[], int lim) {
     ++i;
   }
   s[i] = '\0';
-
-  if (c != '\n' && c != EOF) {
-    while ((c = getchar()) != EOF && c != '\n') {
-      ++i;
-    }
-    if (c == '\n')
-      ++i;
-  }
   return i;
 }

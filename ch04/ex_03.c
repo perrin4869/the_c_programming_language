@@ -1,6 +1,5 @@
 #include "polish_calculator.h"
 #include <ctype.h>
-#include <math.h> /* for fmod() */
 #include <stdio.h>
 #include <stdlib.h> /* for atof() */
 
@@ -40,8 +39,7 @@ main() {
     case '%':
       op2 = pop();
       if (op2 != 0.0)
-        // push((int)pop() % (int)op2);
-        push(fmod(pop(), op2));
+        push((long)pop() % (long)op2);
       else
         printf("error: zero divisor\n");
       break;
@@ -56,9 +54,6 @@ main() {
   return 0;
 }
 
-int getch(void);
-void ungetch(int);
-
 /* getop: get next operator or numeric operand */
 int getop(char s[]) {
   int i, c;
@@ -69,16 +64,17 @@ int getop(char s[]) {
   s[1] = '\0';
   if (!isdigit(c) && c != '.' && c != '-')
     return c;
-
   i = 0;
+
   if (c == '-') {
-    if (isdigit(c = getch()))
-      s[++i] = c;
-    else {
-      ungetch(c);
+    if (!isdigit(c = getch()) && c != '.') {
+      if (c != EOF)
+        ungetch(c);
       return '-';
-    }
+    } else
+      s[++i] = c;
   }
+
   if (isdigit(c))
     while (isdigit(s[++i] = c = getch()))
       ;

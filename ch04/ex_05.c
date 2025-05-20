@@ -1,17 +1,16 @@
 #include "polish_calculator.h"
 #include <ctype.h>
-#include <math.h> /* for fmod() */
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h> /* for atof() */
 #include <string.h>
 
 #define MAXOP 100 /* max size of operand or operator */
-#define FUNCTION 'f'
+#define FUNC '1'
 
 int getop(char[]);
 void push(double);
 double pop(void);
-void clear(void);
 
 main() {
   int type;
@@ -22,6 +21,17 @@ main() {
     switch (type) {
     case NUMBER:
       push(atof(s));
+      break;
+    case FUNC:
+      if (!strcmp(s, "sin"))
+        push(sin(pop()));
+      else if (!strcmp(s, "exp"))
+        push(exp(pop()));
+      else if (!strcmp(s, "pow")) {
+        op2 = pop();
+        push(pow(op2, pop()));
+      } else
+        printf("error: unknown function\n");
       break;
     case '+':
       push(pop() + pop());
@@ -43,17 +53,6 @@ main() {
     case '\n':
       printf("\t%.8g\n", pop());
       break;
-    case FUNCTION:
-      if (strcmp(s, "sin") == 0)
-        push(sin(pop()));
-      else if (!strcmp(s, "exp"))
-        push(exp(pop()));
-      else if (!strcmp(s, "pow")) {
-        op2 = pop();
-        push(pow(pop(), op2));
-      } else
-        printf("error: unknown function %s\n", s);
-      break;
     default:
       printf("error: unknown command %s\n", s);
       break;
@@ -61,9 +60,6 @@ main() {
   }
   return 0;
 }
-
-int getch(void);
-void ungetch(int);
 
 /* getop: get next operator or numeric operand */
 int getop(char s[]) {
@@ -76,13 +72,13 @@ int getop(char s[]) {
 
   i = 0;
   if (isalpha(c)) {
-    while (isalpha(s[++i] = c = getch()))
+    while (isalpha((s[++i] = c = getch())))
       ;
+    ungetch(c);
     s[i] = '\0';
-    if (c != EOF)
-      ungetch(c);
-    return FUNCTION;
+    return FUNC;
   }
+
   if (!isdigit(c) && c != '.')
     return c;
   if (isdigit(c))

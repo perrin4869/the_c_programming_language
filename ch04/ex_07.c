@@ -1,14 +1,20 @@
 #include <stdio.h>
 
+int getch(void);
 void ungetch(int);
-void ungets(char[]);
 
-// the scope of this solution is pretty narrow
-main() {}
+void ungets(const char s[]);
 
-void ungets(char s[]) {
+main() {
+  ungets("foo");
   int i;
-  for (i = 0; s[i] != '\0'; i++) {
-    ungetch(s[i]);
+  for (i = 0; i < 3; i++) {
+    printf("%c", getch());
   }
+}
+
+void ungets(const char s[]) {
+  int i;
+  for (i = 0; s[i] != '\0'; i++)
+    ungetch(s[i]);
 }

@@ -4,33 +4,33 @@
 #include <stdlib.h> /* for atof() */
 
 #define MAXOP 100 /* max size of operand or operator */
-#define VARS 26
-#define VARIABLE 'v'
 
 int getop(char[]);
 void push(double);
 double pop(void);
+void clear(void);
 
+/* the scope of this solution is pretty narrow */
 main() {
   int type;
   double op2;
   char s[MAXOP];
-  double vars[VARS] = {0.0};
-  int lastvar;
+  char vars['z' - 'a' + 1] = {0};
+  int lastvar = 0;
+  double last = 0.0;
 
   while ((type = getop(s)) != EOF) {
     switch (type) {
     case NUMBER:
       push(atof(s));
       break;
-    case VARIABLE:
-      lastvar = s[0] - 'a';
-      push(vars[lastvar]);
-      break;
     case '=':
+      /*
+       * this is the variable value, assume it comes right before the '='
+       * operation as per the answerskey
+       */
       pop();
       vars[lastvar] = pop();
-      push(vars[lastvar]);
       break;
     case '+':
       push(pop() + pop());
@@ -50,41 +50,18 @@ main() {
         printf("error: zero divisor\n");
       break;
     case '\n':
-      printf("\t%.8g\n", op2 = pop());
-      vars['p' - 'a'] = op2;
+      printf("\t%.8g\n", last = pop());
       break;
     default:
-      printf("error: unknown command %s\n", s);
+      if (islower(s[0])) {
+        lastvar = s[0] - 'a';
+        push(vars[lastvar]);
+      } else if (s[0] == 'V') {
+        push(last);
+      } else
+        printf("error: unknown command %s\n", s);
       break;
     }
   }
   return 0;
-}
-
-/* getop: get next operator or numeric operand */
-int getop(char s[]) {
-  int i, c;
-
-  while ((s[0] = c = getch()) == ' ' || c == '\t')
-    ;
-
-  s[1] = '\0';
-
-  if (islower(c))
-    return VARIABLE;
-
-  if (!isdigit(c) && c != '.')
-    return c;
-  i = 0;
-  if (isdigit(c))
-    while (isdigit(s[++i] = c = getch()))
-      ;
-
-  if (c == '.')
-    while (isdigit(s[++i] = c = getch()))
-      ;
-  s[i] = '\0';
-  if (c != EOF)
-    ungetch(c);
-  return NUMBER;
 }

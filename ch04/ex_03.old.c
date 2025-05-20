@@ -1,11 +1,10 @@
 #include "polish_calculator.h"
 #include <ctype.h>
+#include <math.h> /* for fmod() */
 #include <stdio.h>
 #include <stdlib.h> /* for atof() */
 
 #define MAXOP 100 /* max size of operand or operator */
-#define VARS 26
-#define VARIABLE 'v'
 
 int getop(char[]);
 void push(double);
@@ -15,22 +14,11 @@ main() {
   int type;
   double op2;
   char s[MAXOP];
-  double vars[VARS] = {0.0};
-  int lastvar;
 
   while ((type = getop(s)) != EOF) {
     switch (type) {
     case NUMBER:
       push(atof(s));
-      break;
-    case VARIABLE:
-      lastvar = s[0] - 'a';
-      push(vars[lastvar]);
-      break;
-    case '=':
-      pop();
-      vars[lastvar] = pop();
-      push(vars[lastvar]);
       break;
     case '+':
       push(pop() + pop());
@@ -49,9 +37,16 @@ main() {
       else
         printf("error: zero divisor\n");
       break;
+    case '%':
+      op2 = pop();
+      if (op2 != 0.0)
+        /* push((int)pop() % (int)op2); */
+        push(fmod(pop(), op2));
+      else
+        printf("error: zero divisor\n");
+      break;
     case '\n':
-      printf("\t%.8g\n", op2 = pop());
-      vars['p' - 'a'] = op2;
+      printf("\t%.8g\n", pop());
       break;
     default:
       printf("error: unknown command %s\n", s);
@@ -61,6 +56,9 @@ main() {
   return 0;
 }
 
+int getch(void);
+void ungetch(int);
+
 /* getop: get next operator or numeric operand */
 int getop(char s[]) {
   int i, c;
@@ -69,13 +67,18 @@ int getop(char s[]) {
     ;
 
   s[1] = '\0';
-
-  if (islower(c))
-    return VARIABLE;
-
-  if (!isdigit(c) && c != '.')
+  if (!isdigit(c) && c != '.' && c != '-')
     return c;
+
   i = 0;
+  if (c == '-') {
+    if (isdigit(c = getch()))
+      s[++i] = c;
+    else {
+      ungetch(c);
+      return '-';
+    }
+  }
   if (isdigit(c))
     while (isdigit(s[++i] = c = getch()))
       ;
