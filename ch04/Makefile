@@ -36,4 +36,4 @@ ex_11: ex_11.c polish_calculator.c stack.o
 
 .PHONY: clean
 clean:
-	rm -f $(objects) $(shared_objects) calc_static calc_dynamic ex03
+	rm -f $(objects) $(shared_objects) calc_static calc_dynamic
