@@ -1,9 +1,13 @@
 a.out
 *.o
 *.so
+ch01/entab
+ch01/detab
 ch04/calc_dynamic
 ch04/calc_static
 ch04/ex_*
 !ch04/ex_*.c
 ch05/ex_*
 !ch05/ex_*.c
+ch05/find
+ch05/sort

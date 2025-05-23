@@ -5,6 +5,10 @@ shared_objects = $(objects:.o=.so)
 
 all: calc_static calc_dynamic ex_03 ex_04 ex_05 ex_06 ex_07 ex_08 ex_10 ex_11
 
+ch01 = getline.o
+$(addprefix ../ch01/, $(ch01)):
+	$(MAKE) -C ../ch01 $(notdir $@)
+
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -27,6 +31,9 @@ ex_06: ex_06.c stack.o getch.o
 	$(CC) $(CFLAGS) -o $@ $^
 ex_07: ex_07.c getch.o
 	$(CC) $(CFLAGS) -o $@ $^
+ungets.o: ex_07.c
+	$(CC) -c $(CFLAGS) -o $@ $^
+	objcopy --strip-symbol=main $@
 ex_08: ex_08.c polish_calculator.c stack.o getop.o
 	$(CC) $(CFLAGS) -o $@ $^
 ex_10: ex_10.c polish_calculator.c stack.o ../ch01/getline.o
