@@ -1,4 +1,7 @@
 CFLAGS+=-std=c89
+ifeq ($(DEBUG), 1)
+	CFLAGS+=-DDEBUG
+endif
 
 .PHONY: all
 all: ex_01 ex_02 ex_06_getop ex_07 sort find
@@ -37,6 +40,30 @@ ex_10: ex_10.c ../ch04/stack.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 ex_10_answerskey: ex_10_answerskey.c ../ch04/ungets.o ../ch04/getop.o ../ch04/getch.o ../ch04/stack.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_11_detab: ex_11.c detab.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_11_entab: ex_11.c entab.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_12_detab: ex_12.c detab.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_12_entab: ex_12.c entab.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+detab: ex_12.c detab.c
+	$(CC) $(CFLAGS) -DESETTAB -o $@ $^
+
+entab: ex_12.c entab.c
+	$(CC) $(CFLAGS) -DESETTAB -o $@ $^
+
+tail: ex_13.c ../ch01/getline.o alloc.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_13_answerskey: ex_13_answerskey.c ../ch01/getline.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 .PHONY: clean
