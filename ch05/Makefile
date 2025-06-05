@@ -6,7 +6,7 @@ endif
 .PHONY: all
 all: ex_01 ex_02 ex_06_getop ex_07 sort find
 
-objects = alloc.o qsort.o
+objects = alloc.o qsort.o readlines.o writelines.o qsort2.o numcmp.o error.o numcmp2.o substr.o
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -64,6 +64,25 @@ tail: ex_13.c ../ch01/getline.o alloc.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 ex_13_answerskey: ex_13_answerskey.c ../ch01/getline.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+sort2: sort2.c qsort2.o alloc.o ../ch01/getline.o readlines.o writelines.o numcmp.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_14: ex_14.c qsort2.o alloc.o ../ch01/getline.o readlines.o writelines.o numcmp.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_14_answerskey: ex_14_answerskey.c qsort2.o alloc.o ../ch01/getline.o readlines.o numcmp.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_15: ex_15.c qsort2.o alloc.o ../ch01/getline.o readlines.o numcmp.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_16: ex_16.c qsort2.o alloc.o ../ch01/getline.o readlines.o numcmp.o
+	$(CC) $(CFLAGS) -DANSWERS_KEY -o $@ $^
+
+# taken straight from the answers key because I couldn't figure out what the question wanted
+ex_17: ex_17.c qsort2.o alloc.o ../ch01/getline.o readlines.o error.o numcmp2.o substr.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 .PHONY: clean
