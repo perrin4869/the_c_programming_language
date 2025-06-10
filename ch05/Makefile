@@ -6,8 +6,11 @@ endif
 .PHONY: all
 all: ex_01 ex_02 ex_06_getop ex_07 sort find
 
-objects = alloc.o qsort.o readlines.o writelines.o qsort2.o numcmp.o error.o numcmp2.o substr.o gettoken.o
+objects = alloc.o qsort.o readlines.o writelines.o qsort2.o numcmp.o error.o numcmp2.o substr.o gettoken.o ex_18_gettoken.o nexttoken.o
 $(objects): %.o: %.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+dcl.o: dcl_f.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
 ch01 = getline.o
@@ -85,10 +88,22 @@ ex_16: ex_16.c qsort2.o alloc.o ../ch01/getline.o readlines.o numcmp.o
 ex_17: ex_17.c qsort2.o alloc.o ../ch01/getline.o readlines.o error.o numcmp2.o substr.o
 	$(CC) $(CFLAGS) -o $@ $^
 
-dcl: dcl.c gettoken.o ../ch04/getch.o
+dcl: dcl.c gettoken.o dcl.o ../ch04/getch.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 undcl: undcl.c gettoken.o ../ch04/getch.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_18: ex_18.c gettoken.o dcl.o ../ch04/getch.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_18_answerskey: dcl.c ex_18_answerskey.c ex_18_gettoken.o ../ch04/getch.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_19: ex_19.c gettoken.o ../ch04/getch.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_19_answerskey: ex_19_answerskey.c ex_18_gettoken.o nexttoken.o ../ch04/getch.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 .PHONY: clean

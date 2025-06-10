@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -6,6 +7,8 @@
 enum { NAME, PARENS, BRACKETS };
 
 int gettoken(void);
+int nexttoken(void);
+
 int tokentype;        /* type of the last token */
 char token[MAXTOKEN]; /* last token string */
 char out[1000];       /* output string */
@@ -21,7 +24,10 @@ main() {
       if (type == PARENS || type == BRACKETS)
         strcat(out, token);
       else if (type == '*') {
-        sprintf(temp, "(*%s)", out);
+        if ((type = nexttoken()) == PARENS || type == BRACKETS)
+          sprintf(temp, "(*%s)", out);
+        else
+          sprintf(temp, "*%s", out);
         strcpy(out, temp);
       } else if (type == NAME) {
         sprintf(temp, "%s %s", token, out);
@@ -30,6 +36,5 @@ main() {
         printf("invalid input at %s\n", token);
     printf("%s\n", out);
   }
-
   return 0;
 }

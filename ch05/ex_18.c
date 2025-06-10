@@ -21,9 +21,14 @@ main() /* convert declarotion to words */
     strcpy(datatype, token);  /* is the datatype */
     out[0] = '\0';
     dcl(); /* parse rest of line */
-    if (tokentype != '\n')
+    if (tokentype != '\n') {
       printf("syntax error\n");
-    printf("%s: %s %s\n", name, out, datatype);
+      /* skip to end of line and reset output */
+      while (gettoken() != '\n' && tokentype != EOF)
+        ;
+      out[0] = '\0';
+    } else
+      printf("%s: %s %s\n", name, out, datatype);
   }
   return 0;
 }

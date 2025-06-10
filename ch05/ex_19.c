@@ -19,9 +19,13 @@ main() {
     strcpy(out, token);
     while ((type = gettoken()) != '\n')
       if (type == PARENS || type == BRACKETS)
-        strcat(out, token);
+        if (out[0] == '*') {
+          sprintf(temp, "(%s)%s", out, token);
+          strcpy(out, temp);
+        } else
+          strcat(out, token);
       else if (type == '*') {
-        sprintf(temp, "(*%s)", out);
+        sprintf(temp, "*%s", out);
         strcpy(out, temp);
       } else if (type == NAME) {
         sprintf(temp, "%s %s", token, out);
