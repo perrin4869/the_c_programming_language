@@ -17,3 +17,6 @@ ch05/tail
 ch05/sort2
 ch05/dcl
 ch05/undcl
+ch06/ex_*
+!ch06/ex_*.c
+ch06/wordcount

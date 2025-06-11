@@ -4,7 +4,7 @@ ifeq ($(DEBUG), 1)
 endif
 
 .PHONY: all
-all: ex_01 ex_02 ex_06_getop ex_07 sort find
+all: ex_01 ex_02 ex_06_getop ex_07 sort find ex_10 ex_10_answerskey ex_11_detab ex_11_entab ex_12_detab ex_12_entab detab entab tail ex_13_answerskey sort2 ex_14 ex_14_answerskey ex_15 ex_16 ex_17 dcl undcl ex_18 ex_18_answerskey ex_19 ex_19_answerskey ex_20_answerskey
 
 objects = alloc.o qsort.o readlines.o writelines.o qsort2.o numcmp.o error.o numcmp2.o substr.o gettoken.o ex_18_gettoken.o nexttoken.o parmdcl.o
 $(objects): %.o: %.c
