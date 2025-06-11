@@ -6,7 +6,7 @@ endif
 .PHONY: all
 all: ex_01 ex_02 ex_06_getop ex_07 sort find
 
-objects = alloc.o qsort.o readlines.o writelines.o qsort2.o numcmp.o error.o numcmp2.o substr.o gettoken.o ex_18_gettoken.o nexttoken.o
+objects = alloc.o qsort.o readlines.o writelines.o qsort2.o numcmp.o error.o numcmp2.o substr.o gettoken.o ex_18_gettoken.o nexttoken.o parmdcl.o
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -104,6 +104,9 @@ ex_19: ex_19.c gettoken.o ../ch04/getch.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 ex_19_answerskey: ex_19_answerskey.c ex_18_gettoken.o nexttoken.o ../ch04/getch.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_20_answerskey: ex_20_answerskey.c dcl.c ex_18_gettoken.o parmdcl.o ../ch04/getch.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 .PHONY: clean
