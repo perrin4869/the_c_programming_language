@@ -4,7 +4,7 @@ ifeq ($(DEBUG), 1)
 endif
 
 .PHONY: all
-all: wordcount ex_01 ex_01_answerskey
+all: wordcount ex_01 ex_01_answerskey wordcount2
 
 objects = getword.o
 $(objects): %.o: %.c
@@ -22,6 +22,9 @@ ex_01: wordcount.c ex_01.c ../ch04/getch.o
 
 ex_01_answerskey: wordcount.c ex_01_answerskey.c ../ch04/getch.o
 	$(CC) $(CFLAGS) -o $@ $^
+
+wordcount2: wordcount2.c getword.o ../ch04/getch.o
+	$(CC) $(CFLAGS) $^ -o $@
 
 .PHONY: clean
 clean:
