@@ -4,9 +4,9 @@ ifeq ($(DEBUG), 1)
 endif
 
 .PHONY: all
-all: ccountwords ex_01 ex_01_answerskey ccountwords2
+all: ccountwords ex_01 ex_01_answerskey ccountwords2 countwords ex_02 ex_02_answerskey ex_03 ex_03_answerskey ex_04 ex_04_answerskey ex_05 ex_05_answerskey
 
-objects = getword.o strdup.o tnode.o
+objects = getword.o strdup.o tnode.o table.o
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -47,6 +47,12 @@ ex_04: ex_04.c strdup.o tnode.o getword.o ../ch04/getch.o
 
 ex_04_answerskey: ex_04_answerskey.c strdup.o tnode.o getword.o ../ch04/getch.o
 	$(CC) $(CFLAGS) $^ -o $@
+
+ex_05: ex_05.c strdup.o table.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+ex_05_answerskey: ex_05.c strdup.o table.c
+	$(CC) $(CFLAGS) -DANSWERSKEY $^ -o $@
 
 .PHONY: clean
 clean:
