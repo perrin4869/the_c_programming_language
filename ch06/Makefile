@@ -4,13 +4,13 @@ ifeq ($(DEBUG), 1)
 endif
 
 .PHONY: all
-all: ccountwords ex_01 ex_01_answerskey ccountwords2 countwords ex_02 ex_02_answerskey ex_03 ex_03_answerskey ex_04 ex_04_answerskey ex_05 ex_05_answerskey
+all: ccountwords ex_01 ex_01_answerskey ccountwords2 countwords ex_02 ex_02_answerskey ex_03 ex_03_answerskey ex_04 ex_04_answerskey ex_05 ex_05_answerskey ex_06_answerskey
 
 objects = getword.o strdup.o tnode.o table.o
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-ch04 = getch.o
+ch04 = getch.o ungets.o
 $(addprefix ../ch04/, $(ch04)):
 	$(MAKE) -C ../ch04 $(notdir $@)
 
@@ -52,6 +52,9 @@ ex_05: ex_05.c strdup.o table.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 ex_05_answerskey: ex_05.c strdup.o table.c
+	$(CC) $(CFLAGS) -DANSWERSKEY $^ -o $@
+
+ex_06_answerskey: ex_06_answerskey.c strdup.o table.c strdup.o ../ch04/getch.o ../ch04/ungets.o
 	$(CC) $(CFLAGS) -DANSWERSKEY $^ -o $@
 
 .PHONY: clean
