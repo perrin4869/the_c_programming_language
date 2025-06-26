@@ -43,6 +43,59 @@ ex_05_answerskey: ex_05_answerskey.c ../ch04/stack.o ../ch04/polish_calculator.o
 ex_05_answerskey2: ex_05_answerskey2.c ../ch04/stack.o ../ch04/polish_calculator.o
 	$(CC) $(CFLAGS) -o $@ $^
 
+ex_06: ex_06.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_06_answerskey: ex_06_answerskey.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+.PHONY: test_06
+test_06: ex_06 foo bar baz
+	@actual_output="$$(./ex_06 foo bar)"; \
+	expected_output="the files differ on line 3"; \
+	if [ "$$actual_output" = "$$expected_output" ]; then \
+		echo "✅ Output matches expected."; \
+	else \
+		echo "❌ Output mismatch!"; \
+		echo "Actual:   $$actual_output"; \
+		echo "Expected: $$expected_output"; \
+		exit 1; \
+	fi
+	@actual_output="$$(./ex_06 foo baz)"; \
+	expected_output="the files are equal"; \
+	if [ "$$actual_output" = "$$expected_output" ]; then \
+		echo "✅ Output matches expected."; \
+	else \
+		echo "❌ Output mismatch!"; \
+		echo "Actual:   $$actual_output"; \
+		echo "Expected: $$expected_output"; \
+		exit 1; \
+	fi
+
+.PHONY: test_06_answerskey
+test_06_answerskey: ex_06_answerskey foo bar baz
+	@actual_output="$$(./ex_06_answerskey foo bar)"; \
+	expected_output="$$(printf 'first difference in line\nccc')"; \
+	if [ "$$actual_output" = "$$expected_output" ]; then \
+		echo "✅ Output matches expected."; \
+	else \
+		echo "❌ Output mismatch!"; \
+		echo "Actual:   $$actual_output"; \
+		echo "Expected: $$expected_output"; \
+		exit 1; \
+	fi
+	@actual_output="$$(./ex_06_answerskey foo baz)"; \
+	expected_output=""; \
+	if [ "$$actual_output" = "$$expected_output" ]; then \
+		echo "✅ Output matches expected."; \
+	else \
+		echo "❌ Output mismatch!"; \
+		echo "Actual:   $$actual_output"; \
+		echo "Expected: $$expected_output"; \
+		exit 1; \
+	fi
+
+
 .PHONY: clean
 clean:
 	rm -f $(all)
