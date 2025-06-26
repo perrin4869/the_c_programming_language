@@ -4,7 +4,7 @@ ifeq ($(DEBUG), 1)
 endif
 
 .PHONY: all
-all: upper lower ex_02 ex_02_answkerskey ex_03 ex_03_answerskey ex_04 ex_04_answerskey ex_05 ex_05_answerskey ex_05_answerskey2
+all: upper lower ex_02 ex_02_answkerskey ex_03 ex_03_answerskey ex_04 ex_04_answerskey ex_05 ex_05_answerskey ex_05_answerskey2 ex_06 ex_06_answerskey ex_07 ex_07_answerskey
 
 ch04 = stack.o polish_calculator.o
 $(addprefix ../ch04/, $(ch04)):
@@ -95,6 +95,57 @@ test_06_answerskey: ex_06_answerskey foo bar baz
 		exit 1; \
 	fi
 
+ex_07: ex_07.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_07_answerskey: ex_07_answerskey.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+.PHONY: test_07
+test_07: ex_07 foo bar
+	@actual_output="$$(./ex_07 aaa foo bar)"; \
+	expected_output="$$(printf 'foo: aaa\nbar: aaa')"; \
+	if [ "$$actual_output" = "$$expected_output" ]; then \
+		echo "✅ Output matches expected."; \
+	else \
+		echo "❌ Output mismatch!"; \
+		echo "Actual:   $$actual_output"; \
+		echo "Expected: $$expected_output"; \
+		exit 1; \
+	fi
+	@actual_output="$$(./ex_07 ccc foo bar)"; \
+	expected_output="foo: ccc"; \
+	if [ "$$actual_output" = "$$expected_output" ]; then \
+		echo "✅ Output matches expected."; \
+	else \
+		echo "❌ Output mismatch!"; \
+		echo "Actual:   $$actual_output"; \
+		echo "Expected: $$expected_output"; \
+		exit 1; \
+	fi
+
+.PHONY: test_07_answerskey
+test_07_answerskey: ex_07_answerskey foo bar
+	@actual_output="$$(./ex_07_answerskey aaa foo bar)"; \
+	expected_output="$$(printf 'foo - aaa\nbar - aaa')"; \
+	if [ "$$actual_output" = "$$expected_output" ]; then \
+		echo "✅ Output matches expected."; \
+	else \
+		echo "❌ Output mismatch!"; \
+		echo "Actual:   $$actual_output"; \
+		echo "Expected: $$expected_output"; \
+		exit 1; \
+	fi
+	@actual_output="$$(./ex_07_answerskey ccc foo bar)"; \
+	expected_output="foo - ccc"; \
+	if [ "$$actual_output" = "$$expected_output" ]; then \
+		echo "✅ Output matches expected."; \
+	else \
+		echo "❌ Output mismatch!"; \
+		echo "Actual:   $$actual_output"; \
+		echo "Expected: $$expected_output"; \
+		exit 1; \
+	fi
 
 .PHONY: clean
 clean:
