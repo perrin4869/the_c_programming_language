@@ -43,6 +43,9 @@ ex_05_answerskey: ex_05_answerskey.c ../ch04/stack.o ../ch04/polish_calculator.o
 ex_05_answerskey2: ex_05_answerskey2.c ../ch04/stack.o ../ch04/polish_calculator.o
 	$(CC) $(CFLAGS) -o $@ $^
 
+cat: cat.c
+	$(CC) $(CFLAGS) -o $@ $^
+
 ex_06: ex_06.c
 	$(CC) $(CFLAGS) -o $@ $^
 
