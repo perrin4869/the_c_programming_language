@@ -4,7 +4,7 @@ ifeq ($(DEBUG), 1)
 endif
 
 .PHONY: all
-all: upper lower ex_02 ex_02_answkerskey ex_03 ex_03_answerskey ex_04 ex_04_answerskey ex_05 ex_05_answerskey ex_05_answerskey2 ex_06 ex_06_answerskey ex_07 ex_07_answerskey ex_08_answerskey ex_09_answerskey
+all: upper lower ex_02 ex_02_answkerskey ex_03 ex_03_answerskey ex_04 ex_04_answerskey ex_05 ex_05_answerskey ex_05_answerskey2 cat ex_06 ex_06_answerskey ex_07 ex_07_answerskey ex_08_answerskey ex_09_answerskey
 
 ch04 = stack.o polish_calculator.o
 $(addprefix ../ch04/, $(ch04)):

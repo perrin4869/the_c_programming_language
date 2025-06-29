@@ -4,13 +4,13 @@ ifeq ($(DEBUG), 1)
 endif
 
 .PHONY: all
-all: itoo
+all: itoo cp cat cat_answerskey test_fopen ex_02 ex_02_answerskey
 
 ch07 = cat
 $(addprefix ../ch07/, $(ch07)):
 	$(MAKE) -C ../ch07 $(notdir $@)
 
-objects = error.o
+objects = error.o get.o fopen.o
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -42,8 +42,9 @@ cat_answerskey: ex_01_answerskey.c error.o
 
 input.txt:
 	@echo "Generating input.txt (1MB)..."
-	head -c 1k </dev/urandom > input.txt
+	head -c 1M </dev/urandom > input.txt
 
+.PHONY: bench-cat
 bench-cat: cat cat_answerskey input.txt ../ch07/cat
 	@echo "Benchmarking ./cat 1000 times..."
 	@/usr/bin/time -f "⏱️  Elapsed time: %e seconds" bash -c '\
@@ -61,6 +62,33 @@ bench-cat: cat cat_answerskey input.txt ../ch07/cat
 	    ../ch07/cat input.txt > /dev/null; \
 	  done'
 
+test_fopen: test_fopen.c fopen.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_02: test_fopen.c ex_02.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_02_answerskey: test_fopen.c ex_02_answerskey.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+.PHONY: bench-fopen
+bench-fopen: test_fopen ex_02 ex_02_answerskey input.txt
+	@echo "Benchmarking ./test_fopen 1000 times..."
+	@/usr/bin/time -f "⏱️  Elapsed time: %e seconds" bash -c '\
+	  for i in {1..1000}; do \
+	    ./test_fopen > /dev/null; \
+	  done'
+	@echo "Benchmarking answerskey ./ex_02 1000 times..."
+	@/usr/bin/time -f "⏱️  Elapsed time: %e seconds" bash -c '\
+	  for i in {1..1000}; do \
+	    ./ex_02 > /dev/null; \
+	  done'
+	@echo "Benchmarking standard library cat ../ch07/cat 1000 times..."
+	@/usr/bin/time -f "⏱️  Elapsed time: %e seconds" bash -c '\
+	  for i in {1..1000}; do \
+	    ./ex_02_answerskey > /dev/null; \
+	  done'
+
 .PHONY: clean
 clean:
-	rm -f $(all) foo bar input.txt
+	rm -f $(all) $(objects) foo bar input.txt
