@@ -5,10 +5,11 @@ int printf(const char *, ...);
 
 main() {
   FILE *fp;
+  char *name = "input.txt";
   int c;
 
-  if ((fp = fopen("input.txt", "r")) == NULL) {
-    printf("failed to open foo.");
+  if ((fp = fopen(name, "r")) == NULL) {
+    printf("failed to open %s.", name);
     return 1;
   };
   while ((c = getc(fp)) != EOF)

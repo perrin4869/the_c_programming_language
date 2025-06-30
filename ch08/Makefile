@@ -71,6 +71,10 @@ ex_02: test_fopen.c ex_02.c
 ex_02_answerskey: test_fopen.c ex_02_answerskey.c
 	$(CC) $(CFLAGS) -o $@ $^
 
+# the answerskey mentions that the fields solution is slower and
+# results in a larger program than the bit operations one.
+# I could not reproduce the slower part on my modern computer,
+# they perform about the same
 .PHONY: bench-fopen
 bench-fopen: test_fopen ex_02 ex_02_answerskey input.txt
 	@echo "Benchmarking ./test_fopen 1000 times..."
@@ -88,6 +92,12 @@ bench-fopen: test_fopen ex_02 ex_02_answerskey input.txt
 	  for i in {1..1000}; do \
 	    ./ex_02_answerskey > /dev/null; \
 	  done'
+
+ex_03: test_fflush.c ex_03.c fopen.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_03_answerskey: test_fflush.c ex_03_answerskey.c fopen.o
+	$(CC) $(CFLAGS) -o $@ $^
 
 .PHONY: clean
 clean:
