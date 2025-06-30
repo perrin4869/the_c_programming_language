@@ -99,6 +99,12 @@ ex_03: test_fflush.c ex_03.c fopen.o
 ex_03_answerskey: test_fflush.c ex_03_answerskey.c fopen.o
 	$(CC) $(CFLAGS) -o $@ $^
 
+ex_04: test_fseek.c ex_04.c ex_03_answerskey.c fopen.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_04_answerskey: test_fseek.c ex_04_answerskey.c ex_03_answerskey.c fopen.o
+	$(CC) $(CFLAGS) -o $@ $^
+
 .PHONY: clean
 clean:
 	rm -f $(all) $(objects) foo bar input.txt
