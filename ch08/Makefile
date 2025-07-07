@@ -10,7 +10,7 @@ ch07 = cat
 $(addprefix ../ch07/, $(ch07)):
 	$(MAKE) -C ../ch07 $(notdir $@)
 
-objects = error.o get.o fopen.o
+objects = error.o get.o fopen.o dirwalk.o opendir.o closedir.o readdir.o
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -105,6 +105,12 @@ ex_04: test_fseek.c ex_04.c ex_03_answerskey.c fopen.o
 ex_04_answerskey: test_fseek.c ex_04_answerskey.c ex_03_answerskey.c fopen.o
 	$(CC) $(CFLAGS) -o $@ $^
 
+fsize: fsize.c dirwalk.o opendir.o closedir.o readdir.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_05_answerskey: ex_05_answerskey.c dirwalk.o opendir.o closedir.o readdir.o
+	$(CC) $(CFLAGS) -o $@ $^
+
 .PHONY: clean
 clean:
-	rm -f $(all) $(objects) foo bar input.txt
+	rm -f $(all) $(objects) foo bar input.txt fsize
