@@ -10,7 +10,7 @@ ch07 = cat
 $(addprefix ../ch07/, $(ch07)):
 	$(MAKE) -C ../ch07 $(notdir $@)
 
-objects = error.o get.o fopen.o dirwalk.o opendir.o closedir.o readdir.o
+objects = error.o get.o fopen.o dirwalk.o opendir.o closedir.o readdir.o malloc.o calloc.o
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -110,6 +110,15 @@ fsize: fsize.c dirwalk.o opendir.o closedir.o readdir.o
 
 ex_05_answerskey: ex_05_answerskey.c dirwalk.o opendir.o closedir.o readdir.o
 	$(CC) $(CFLAGS) -o $@ $^
+
+test_malloc: test_malloc.c malloc.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_06.o: ex_06.c
+	$(CC) -c $(CFLAGS) -o $@ $^
+
+ex_06_answerskey.o: ex_06_answerskey.c
+	$(CC) -c $(CFLAGS) -o $@ $^
 
 .PHONY: clean
 clean:
