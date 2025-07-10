@@ -5,29 +5,18 @@
 static Header base;          /* empty list to get started */
 static Header *freep = NULL; /* start of free list */
 
-#define NALLOC 1024 /* minimum #units to request */
-/* morecore: ask system for more memory */
-static Header *morecore(unsigned nu) {
-  char *cp, *sbrk(int);
-  Header *up;
-  void free(void *ap);
+static Header *morecore(unsigned nu);
 
-  if (nu < NALLOC)
-    nu = NALLOC;
-  cp = sbrk(nu * sizeof(Header));
-  if (cp == (char *)-1) /* no space at all */
-    return NULL;
-  up = (Header *)cp;
-  up->s.size = nu;
-  free((void *)(up + 1));
-  return freep;
-}
+#define MAXALLOC 10 * 1024 /* maximum 10kB */
 
 /* malloc: general-purpose storage allocator */
 void *malloc(unsigned nbytes) {
   Header *p, *prevp;
   Header *morecore(unsigned);
   unsigned nunits;
+
+  if (nbytes >= MAXALLOC)
+    return NULL;
 
   /*
    * note to self: the -1 is there to implement the rounding operation
@@ -60,11 +49,33 @@ void *malloc(unsigned nbytes) {
   }
 }
 
+#define NALLOC 1024 /* minimum #units to request */
+/* morecore: ask system for more memory */
+static Header *morecore(unsigned nu) {
+  char *cp, *sbrk(int);
+  Header *up;
+  void free(void *ap);
+
+  if (nu < NALLOC)
+    nu = NALLOC;
+  cp = sbrk(nu * sizeof(Header));
+  if (cp == (char *)-1) /* no space at all */
+    return NULL;
+  up = (Header *)cp;
+  up->s.size = nu;
+  free((void *)(up + 1));
+  return freep;
+}
+
 /* free: put block ap in free list */
 void free(void *ap) {
   Header *bp, *p;
 
   bp = (Header *)ap - 1; /* point to block header */
+
+  if (bp->s.size >= MAXALLOC)
+    return;
+
   for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
     if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
       break; /* freed block at start or end of arena */

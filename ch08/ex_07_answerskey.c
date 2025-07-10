@@ -1,27 +1,15 @@
 #include <stddef.h>
+#include <stdio.h>
 
 #include "header.h"
 
+#define MAXBYTES (unsigned)10240
+
+static unsigned maxalloc;    /* max number of units allocated */
 static Header base;          /* empty list to get started */
 static Header *freep = NULL; /* start of free list */
 
-#define NALLOC 1024 /* minimum #units to request */
-/* morecore: ask system for more memory */
-static Header *morecore(unsigned nu) {
-  char *cp, *sbrk(int);
-  Header *up;
-  void free(void *ap);
-
-  if (nu < NALLOC)
-    nu = NALLOC;
-  cp = sbrk(nu * sizeof(Header));
-  if (cp == (char *)-1) /* no space at all */
-    return NULL;
-  up = (Header *)cp;
-  up->s.size = nu;
-  free((void *)(up + 1));
-  return freep;
-}
+static Header *morecore(unsigned nu);
 
 /* malloc: general-purpose storage allocator */
 void *malloc(unsigned nbytes) {
@@ -29,14 +17,10 @@ void *malloc(unsigned nbytes) {
   Header *morecore(unsigned);
   unsigned nunits;
 
-  /*
-   * note to self: the -1 is there to implement the rounding operation
-   * let's say, sizeof(Header) = 8 and nbytes = 8, then we need 2 units
-   * if we remove the -1, the calculation gives us 3 units
-   * generally, `(n - 1)/m + 1` calculates the ceil of n/m when n and m
-   * are positive integers
-   * `(n - 1)/m + 1` is equivalent to `ceil(n / (double)m)`
-   * */
+  if (nbytes > MAXBYTES) { /* not more than MAXBYTES */
+    fprintf(stderr, "alloc: can't allocate more than %u bytes\n", MAXBYTES);
+    return NULL;
+  }
   nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
   if ((prevp = freep) == NULL) { /* no free list yet */
     base.s.ptr = freep = prevp = &base;
@@ -60,11 +44,35 @@ void *malloc(unsigned nbytes) {
   }
 }
 
+#define NALLOC 1024 /* minimum #units to request */
+
+/* morecore: ask system for more memory */
+static Header *morecore(unsigned nu) {
+  char *cp, *sbrk(int);
+  Header *up;
+  void free(void *ap);
+
+  if (nu < NALLOC)
+    nu = NALLOC;
+  cp = sbrk(nu * sizeof(Header));
+  if (cp == (char *)-1) /* no space at all */
+    return NULL;
+  up = (Header *)cp;
+  up->s.size = nu;
+  maxalloc = (up->s.size > maxalloc) ? up->s.size : maxalloc;
+  free((void *)(up + 1));
+  return freep;
+}
+
 /* free: put block ap in free list */
 void free(void *ap) {
   Header *bp, *p;
 
   bp = (Header *)ap - 1; /* point to block header */
+  if (bp->s.size == 0 || bp->s.size > maxalloc) {
+    fprintf(stderr, "free: can't free %u units\n", bp->s.size);
+    return;
+  }
   for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
     if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
       break; /* freed block at start or end of arena */

@@ -120,6 +120,18 @@ ex_06.o: ex_06.c
 ex_06_answerskey.o: ex_06_answerskey.c
 	$(CC) -c $(CFLAGS) -o $@ $^
 
+ex_07: test_malloc_overflow.c ex_07.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_07_answerskey: test_malloc_overflow.c ex_07_answerskey.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_08: test_bfree.c ex_08.c malloc.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+ex_08_answerskey: test_bfree.c ex_08_answerskey.c malloc.o
+	$(CC) $(CFLAGS) -o $@ $^
+
 .PHONY: clean
 clean:
 	rm -f $(all) $(objects) foo bar input.txt fsize
